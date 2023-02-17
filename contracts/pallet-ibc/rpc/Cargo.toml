@@ -15,7 +15,7 @@ ibc-primitives = { path = "../primitives" }
 jsonrpsee = { version = "0.16.2", features = ["server", "macros"] }
 pallet-ibc = { path = ".." }
 serde = { version = "1.0.136", features = ["derive"] }
-serde_json = "1.0.45"
+serde_json = "1.0.93"
 
 frame-system = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.36" }
 ibc-proto = { path = "../../../ibc/proto", default-features = false }
