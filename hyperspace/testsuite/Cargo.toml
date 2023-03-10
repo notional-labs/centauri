@@ -18,7 +18,7 @@ json = { version = "1.0.85", package = "serde_json" }
 
 ibc = { path = "../../ibc/modules" }
 ibc-proto = { path = "../../ibc/proto" }
-tendermint-proto = { git = "https://github.com/informalsystems/tendermint-rs", rev = "47e28b50d20138234f7a8b4254da71469f401714", default-features = false }
+tendermint-proto = { git = "https://github.com/informalsystems/tendermint-rs", rev = "e81f7bf23d63ffbcd242381d1ce5e35da3515ff1", default-features = false }
 
 hyperspace-core = { path = "../core", features = ["testing"] }
 hyperspace-parachain = { path = "../parachain", features = ["testing"] }
@@ -45,7 +45,11 @@ hex = "0.4.3"
 subxt = { git = "https://github.com/paritytech/subxt",  rev = "d92352ad739836a4100e1ef1db607acc82ed8c5a", features = ["substrate-compat"] }
 hyperspace-core = { path = "../core", features = ["testing", "build-metadata-from-ws"] }
 hyperspace-parachain = { path = "../parachain", features = ["testing", "build-metadata-from-ws"] }
+hyperspace-cosmos = { path = "../cosmos", features = [] }
 
 # We need this so the tests run sequentially
 [[test]]
 name = "parachain_parachain"
+
+[[test]]
+name = "parachain_cosmos"

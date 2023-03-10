@@ -26,7 +26,8 @@ use crate::{
 			error as client_error, events as ClientEvents, events::NewBlock, height::HeightError,
 		},
 		ics03_connection::{
-			events as ConnectionEvents, events::Attributes as ConnectionAttributes,
+			error as connection_error, events as ConnectionEvents,
+			events::Attributes as ConnectionAttributes,
 		},
 		ics04_channel::{
 			error as channel_error, events as ChannelEvents,
@@ -57,6 +58,10 @@ define_error! {
 			[ channel_error::Error ]
 			| _ | { "channel error" },
 
+		Connection
+			[ connection_error::Error ]
+			| _ | { "connection error" },
+
 		Timestamp
 			[ ParseTimestampError ]
 			| _ | { "error parsing timestamp" },
@@ -83,6 +88,14 @@ define_error! {
 		MalformedModuleEvent
 			{ event: ModuleEvent }
 			| e | { format_args!("module event cannot use core event types: {:?}", e.event) },
+
+		UnsupportedAbciEvent
+			{event_type: String}
+			|e| { format_args!("Unable to parse abci event type '{}' into IbcEvent", e.event_type)},
+
+		FromHexError
+			[ TraceError<hex::FromHexError> ]
+			| _ | { "error decoding hex" }
 	}
 }
 
@@ -130,7 +143,7 @@ const CHANNEL_CLOSE_INIT_EVENT: &str = "channel_close_init";
 const CHANNEL_CLOSE_CONFIRM_EVENT: &str = "channel_close_confirm";
 /// Packet event types
 const SEND_PACKET_EVENT: &str = "send_packet";
-const RECEIVE_PACKET_EVENT: &str = "receive_packet";
+const RECEIVE_PACKET_EVENT: &str = "recv_packet";
 const WRITE_ACK_EVENT: &str = "write_acknowledgement";
 const ACK_PACKET_EVENT: &str = "acknowledge_packet";
 const TIMEOUT_EVENT: &str = "timeout_packet";
