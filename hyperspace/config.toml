@@ -1,10 +1,10 @@
-# Parachain to Parachain configuration template
+# Parachain to Cosmos configuration template
 [chain_a]
 type = "parachain"
 name = "picasso"
 para_id = 2001
-parachain_rpc_url = "ws://127.0.0.1:9988"
-relay_chain_rpc_url = "ws://127.0.0.1:9944"
+parachain_rpc_url = "ws://65.108.73.88:9988"
+relay_chain_rpc_url = "ws://65.108.73.88:9944"
 client_id = "10-grandpa-0"
 connection_id = "connection-0"
 channel_whitelist = []
@@ -15,19 +15,21 @@ key_type = "sr25519"
 finality_protocol = "Grandpa"
 
 [chain_b]
-type = "parachain"
-name = "picasso"
-para_id = 2000
-parachain_rpc_url = "ws://127.0.0.1:9188"
-relay_chain_rpc_url = "ws://127.0.0.1:9944"
+type = "cosmos"
+name = "polytoped"
+rpc_url = "http://127.0.0.1:26657"
+grpc_url = "http://127.0.0.1:9090"
+websocket_url = "ws://127.0.0.1:26657/websocket"
+chain_id = "test-1"
 client_id = "10-grandpa-0"
 connection_id = "connection-0"
+account_prefix = "polytope"
 channel_whitelist = []
-commitment_prefix = "0x6962632f"
-private_key = "//Alice"
-ss58_version = 49
-key_type = "sr25519"
-finality_protocol = "Grandpa"
+fee_denom = "stake"
+fee_amount = "100"
+store_prefix = "0x6962632f"
+max_tx_size = 128  # a number
+keybase =  {Mnemonic = "idea gap afford glow ugly suspect exile wedding fiber turn opinion weekend moon project egg certain play obvious slice delay present weekend toe ask" }
 
 [core]
 prometheus_endpoint = "https://127.0.0.1"

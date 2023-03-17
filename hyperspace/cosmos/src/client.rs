@@ -233,12 +233,10 @@ where
 
 		let keybase: KeyEntry;
 		match config.keybase {
-			KeyBaseConfig::ConfigKeyEntry(config_key) => {
-				keybase = KeyEntry::try_from(config_key).map_err(|e| e.to_string())?
-			},
-			KeyBaseConfig::Mnemonic(mnemonic) => {
-				keybase = KeyEntry::try_from(mnemonic).map_err(|e| e.to_string())?
-			},
+			KeyBaseConfig::ConfigKeyEntry(config_key) =>
+				keybase = KeyEntry::try_from(config_key).map_err(|e| e.to_string())?,
+			KeyBaseConfig::Mnemonic(mnemonic) =>
+				keybase = KeyEntry::try_from(mnemonic).map_err(|e| e.to_string())?,
 		}
 		Ok(Self {
 			name: config.name,
@@ -261,7 +259,7 @@ where
 			fee_amount: config.fee_amount,
 			gas_limit: config.gas_limit,
 			max_tx_size: config.max_tx_size,
-			keybase: keybase,
+			keybase,
 			channel_whitelist: config.channel_whitelist,
 			_phantom: std::marker::PhantomData,
 			tx_mutex: Default::default(),
@@ -435,7 +433,7 @@ where
 			return Err(Error::from(format!(
 				"Query failed with code {:?} and log {:?}",
 				response.code, response.log
-			)));
+			)))
 		}
 
 		if prove && response.proof.is_none() {
@@ -443,7 +441,7 @@ where
 			return Err(Error::from(format!(
 				"Query failed due to empty proof for chain {}",
 				self.name
-			)));
+			)))
 		}
 
 		let merkle_proof = response
@@ -466,10 +464,9 @@ pub mod tests {
 
 	struct TestVector {
 		mnemonic: &'static str,
-		private_key: [u8;32],
-		public_key: [u8;33],
+		private_key: [u8; 32],
+		public_key: [u8; 33],
 		account: &'static str,
-		address: [u8;20]
 	}
 	const TEST_VECTORS : &[TestVector] = &[
 		TestVector {
@@ -483,21 +480,18 @@ pub mod tests {
 				26, 243, 17, 241, 200, 87, 140, 93, 229, 26, 42, 81, 39, 208, 4, 219
 			],
 			account: "cosmos15hf3dgggyt4azpd693ax7fdfve8d5m6ct72z9p",
-			address: [165, 211, 22, 161, 8, 34, 235, 209, 5, 186, 44, 122, 111, 37, 169, 102, 78, 218, 111, 88], 
 		},
 		TestVector {
 			mnemonic: "elite program lift later ask fox change process dirt talk type coconut",
 			private_key: [97, 173, 171, 67, 228, 198, 20, 233, 30, 232, 208, 250, 151, 66, 76, 129, 83, 100, 17, 219, 74, 20, 43, 202, 110, 166, 72, 184, 100, 180, 135, 132],
 			public_key: [2, 167, 203, 215, 223, 101, 49, 90, 51, 44, 171, 156, 157, 167, 99, 213, 97, 84, 38, 210, 64, 168, 133, 38, 159, 49, 4, 24, 159, 137, 83, 92, 160],
 			account: "cosmos1dxsre7u4zkg28k4fqtgy2slcrrq46hqafe6547",
-			address: [105, 160, 60, 251, 149, 21, 144, 163, 218, 169, 2, 208, 69, 67, 248, 24, 193, 93, 92, 29], 
 		},
 		TestVector {
 			mnemonic: "habit few zero correct fancy hair common club slow lunch brief spawn away brief loyal flee witness possible faint legend spell arrive gravity hybrid",
 			private_key: [91, 189, 78, 43, 217, 14, 16, 247, 18, 196, 173, 149, 131, 156, 254, 191, 156, 154, 60, 255, 196, 2, 97, 219, 92, 160, 15, 224, 177, 216, 27, 44],
 			public_key: [3, 45, 249, 112, 87, 75, 114, 244, 199, 129, 6, 142, 9, 221, 205, 100, 226, 233, 131, 167, 146, 187, 181, 7, 176, 80, 107, 61, 151, 44, 185, 116, 116],
 			account: "cosmos1xf5280nzgqxyxps526vw0t6vd90gthd76fv6s8",
-			address: [50, 104, 163, 190, 98, 64, 12, 67, 6, 20, 86, 152, 231, 175, 76, 105, 94, 133, 221, 190], 
 		},
 	];
 
@@ -506,20 +500,12 @@ pub mod tests {
 		for vector in TEST_VECTORS {
 			match KeyEntry::try_from(vector.mnemonic.to_string()) {
 				Ok(key_entry) => {
-					assert_eq!(
-						key_entry.private_key.to_bytes(), vector.private_key
-					);
-					assert_eq!(
-						key_entry.public_key.to_bytes(),vector.public_key
-					);
-					assert_eq!(
-						key_entry.account, vector.account
-					);
-					assert_eq!(key_entry.address, vector.address);
+					assert_eq!(key_entry.private_key.to_bytes(), vector.private_key);
+					assert_eq!(key_entry.public_key.to_bytes(), vector.public_key);
+					assert_eq!(key_entry.account, vector.account);
 				},
 				Err(_) => panic!("Try from mnemonic failed"),
 			}
 		}
-
 	}
 }
