@@ -94,7 +94,7 @@ impl TryFrom<String> for KeyEntry {
 		let sha256 = sha2::Sha256::digest(key_m.public_key().to_bytes());
 		let public_key_hash: [u8; 20] = Ripemd160::digest(sha256).into();
 		let account =
-			bech32::encode("cosmos", public_key_hash.to_base32(), bech32::Variant::Bech32).unwrap();
+			bech32::encode("polytope", public_key_hash.to_base32(), bech32::Variant::Bech32).unwrap();
 		Ok(KeyEntry {
 			public_key: key_m.public_key(),
 			private_key: key_m,

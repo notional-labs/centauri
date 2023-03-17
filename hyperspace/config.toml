@@ -1,35 +1,32 @@
 # Parachain to Cosmos configuration template
 [chain_a]
 type = "parachain"
-name = "picasso"
+name = "9988"
 para_id = 2001
 parachain_rpc_url = "ws://65.108.73.88:9988"
 relay_chain_rpc_url = "ws://65.108.73.88:9944"
-client_id = "10-grandpa-0"
-connection_id = "connection-0"
 channel_whitelist = []
 commitment_prefix = "0x6962632f"
 private_key = "//Alice"
-ss58_version = 49
+ss58_version = 42
 key_type = "sr25519"
 finality_protocol = "Grandpa"
 
 [chain_b]
 type = "cosmos"
-name = "polytoped"
+name = "polytope"
 rpc_url = "http://127.0.0.1:26657"
 grpc_url = "http://127.0.0.1:9090"
 websocket_url = "ws://127.0.0.1:26657/websocket"
 chain_id = "test-1"
-client_id = "10-grandpa-0"
-connection_id = "connection-0"
 account_prefix = "polytope"
 channel_whitelist = []
 fee_denom = "stake"
-fee_amount = "100"
+fee_amount = "4000"
+gas_limit = 1000000
 store_prefix = "0x6962632f"
-max_tx_size = 128  # a number
-keybase =  {Mnemonic = "idea gap afford glow ugly suspect exile wedding fiber turn opinion weekend moon project egg certain play obvious slice delay present weekend toe ask" }
+max_tx_size = 200000  # a number
+keybase =  {Mnemonic = "wealth flavor believe regret funny network recall kiss grape useless pepper cram hint member few certain unveil rather brick bargain curious require crowd raise" }
 
 [core]
 prometheus_endpoint = "https://127.0.0.1"
