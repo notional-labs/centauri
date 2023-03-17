@@ -1137,12 +1137,12 @@ dependencies = [
 
 [[package]]
 name = "clap"
-version = "4.1.4"
+version = "4.1.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f13b9c79b5d1dd500d20ef541215a6423c75829ef43117e1b4d17fd8af0b5d76"
+checksum = "9a9d6ada83c1edcce028902ea27dd929069c70df4c7600b131b4d9a1ad2879cc"
 dependencies = [
  "bitflags",
- "clap_derive 4.1.0",
+ "clap_derive 4.1.9",
  "clap_lex 0.3.1",
  "is-terminal",
  "once_cell",
@@ -1174,9 +1174,9 @@ dependencies = [
 
 [[package]]
 name = "clap_derive"
-version = "4.1.0"
+version = "4.1.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "684a277d672e91966334af371f1a7b5833f9aa00b07c84e92fbce95e00208ce8"
+checksum = "fddf67631444a3a3e3e5ac51c36a5e01335302de677bd78759eaa90ab1f46644"
 dependencies = [
  "heck",
  "proc-macro-error",
@@ -1220,7 +1220,7 @@ name = "codegen"
 version = "0.1.0"
 dependencies = [
  "anyhow",
- "clap 4.1.4",
+ "clap 4.1.9",
  "frame-metadata",
  "hex",
  "jsonrpsee",
@@ -1589,7 +1589,7 @@ name = "cumulus-client-cli"
 version = "0.1.0"
 source = "git+https://github.com/paritytech/cumulus?branch=polkadot-v0.9.36#afe528af891f464b318293f183f6d3eefbc979b0"
 dependencies = [
- "clap 4.1.4",
+ "clap 4.1.9",
  "parity-scale-codec",
  "sc-chain-spec",
  "sc-cli",
@@ -2836,7 +2836,7 @@ dependencies = [
  "Inflector",
  "array-bytes 4.2.0",
  "chrono",
- "clap 4.1.4",
+ "clap 4.1.9",
  "comfy-table",
  "frame-benchmarking",
  "frame-support",
@@ -3840,7 +3840,7 @@ name = "hyperspace"
 version = "0.1.0"
 dependencies = [
  "anyhow",
- "clap 4.1.4",
+ "clap 4.1.9",
  "hyperspace-core",
  "tokio",
  "toml 0.7.2",
@@ -3852,7 +3852,7 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "async-trait",
- "clap 4.1.4",
+ "clap 4.1.9",
  "derive_more",
  "env_logger 0.10.0",
  "frame-support",
@@ -3917,7 +3917,7 @@ dependencies = [
  "beefy-light-client",
  "beefy-light-client-primitives",
  "beefy-prover",
- "clap 4.1.4",
+ "clap 4.1.9",
  "codegen",
  "derive_more",
  "finality-grandpa",
@@ -7317,7 +7317,7 @@ dependencies = [
 name = "parachain-node"
 version = "0.1.0"
 dependencies = [
- "clap 4.1.4",
+ "clap 4.1.9",
  "cumulus-client-cli",
  "cumulus-client-collator",
  "cumulus-client-consensus-aura",
@@ -7833,7 +7833,7 @@ name = "polkadot-cli"
 version = "0.9.36"
 source = "git+https://github.com/paritytech/polkadot?branch=release-v0.9.36#dc25abc712e42b9b51d87ad1168e453a42b5f0bc"
 dependencies = [
- "clap 4.1.4",
+ "clap 4.1.9",
  "frame-benchmarking-cli",
  "futures",
  "log",
@@ -10025,7 +10025,7 @@ source = "git+https://github.com/paritytech/substrate?branch=polkadot-v0.9.36#cb
 dependencies = [
  "array-bytes 4.2.0",
  "chrono",
- "clap 4.1.4",
+ "clap 4.1.9",
  "fdlimit",
  "futures",
  "libp2p",
@@ -14318,7 +14318,7 @@ name = "try-runtime-cli"
 version = "0.10.0-dev"
 source = "git+https://github.com/paritytech/substrate?branch=polkadot-v0.9.36#cb4f2491b00af7d7817f3a54209c26b20faa1f51"
 dependencies = [
- "clap 4.1.4",
+ "clap 4.1.9",
  "frame-remote-externalities",
  "hex",
  "log",
@@ -14376,7 +14376,7 @@ version = "1.6.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "97fee6b57c6a41524a810daee9286c02d7752c4253064d0b05472833a438f675"
 dependencies = [
- "cfg-if 0.1.10",
+ "cfg-if 1.0.0",
  "digest 0.10.6",
  "rand 0.8.5",
  "static_assertions",
