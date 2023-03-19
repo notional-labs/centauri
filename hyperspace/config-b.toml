@@ -1,0 +1,14 @@
+type = "cosmos"
+name = "polytope"
+rpc_url = "http://127.0.0.1:26657"
+grpc_url = "http://127.0.0.1:9090"
+websocket_url = "ws://127.0.0.1:26657/websocket"
+chain_id = "test-1"
+account_prefix = "polytope"
+channel_whitelist = []
+fee_denom = "stake"
+fee_amount = "4000"
+gas_limit = 1000000
+store_prefix = "0x6962632f"
+max_tx_size = 20000000  # a number
+keybase =  {Mnemonic = "decorate bright ozone fork gallery riot bus exhaust worth way bone indoor calm squirrel merry zero scheme cotton until shop any excess stage laundry" }

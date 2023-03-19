@@ -1,0 +1,11 @@
+type = "parachain"
+name = "9988"
+para_id = 2001
+parachain_rpc_url = "ws://65.108.73.88:9988"
+relay_chain_rpc_url = "ws://65.108.73.88:9944"
+channel_whitelist = []
+commitment_prefix = "0x6962632f"
+private_key = "//Alice"
+ss58_version = 42
+key_type = "sr25519"
+finality_protocol = "Grandpa"
