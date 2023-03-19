@@ -362,8 +362,8 @@ impl<C: HostBlockType> ChannelKeeper for DummyTransferModule<C> {
 
 	fn store_raw_acknowledgement(
 		&mut self,
-		key: (PortId, ChannelId, Sequence),
-		ack: Acknowledgement,
+		_key: (PortId, ChannelId, Sequence),
+		_ack: Acknowledgement,
 	) -> Result<(), Error> {
 		Ok(())
 	}
@@ -472,6 +472,7 @@ impl<C: HostBlockType> ClientReader for DummyTransferModule<C> {
 		&self,
 		_height: Height,
 		_proof: Option<Vec<u8>>,
+		_client_state: &Self::AnyClientState,
 	) -> Result<Self::AnyConsensusState, Ics02Error> {
 		unimplemented!()
 	}

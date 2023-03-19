@@ -57,10 +57,11 @@ use ibc_rpc::PacketInfo;
 use ics07_tendermint::{
 	client_message::ClientMessage, client_state::ClientState, consensus_state::ConsensusState,
 };
+use ics08_wasm::msg::MsgPushNewWasmCode;
 use pallet_ibc::light_clients::{
 	AnyClientMessage, AnyClientState, AnyConsensusState, HostFunctionsManager,
 };
-use primitives::{mock::LocalClientTypes, Chain, IbcProvider, UpdateType};
+use primitives::{mock::LocalClientTypes, Chain, IbcProvider, KeyProvider, UpdateType};
 use prost::Message;
 use std::{pin::Pin, str::FromStr, time::Duration};
 use tendermint::block::Height as TmHeight;
@@ -127,12 +128,12 @@ where
 		let update_headers =
 			self.msg_update_client_header(from, to, client_state.latest_height).await?;
 		let mut block_events = Vec::new();
+		block_events.push(Vec::new());
 		for height in from.value()..to.value() {
 			let ibc_events = self.parse_ibc_events_at(latest_revision, height).await?;
 			block_events.push(ibc_events);
 		}
 		// we don't submit events for the last block, because we don't have a proof for it
-		block_events.push(Vec::new());
 		assert_eq!(block_events.len(), update_headers.len(), "block events and updates must match");
 
 		let mut updates = Vec::new();
@@ -210,6 +211,7 @@ where
 						for abci_event in &tx_result.result.events {
 							if let Ok(ibc_event) = ibc_event_try_from_abci_event(abci_event, height)
 							{
+								log::debug!(target: "hyperspace_cosmos", "Retrieved event: {}, query: {}, parsed: {:?}", abci_event.kind, query, ibc_event);
 								if query == Query::eq("message.module", "ibc_client").to_string() &&
 									event_is_type_client(&ibc_event)
 								{
@@ -229,6 +231,8 @@ where
 								{
 									events_with_height
 										.push(IbcEventWithHeight::new(ibc_event, height));
+								} else {
+									log::debug!(target: "hyperspace_cosmos", "The event is unknown");
 								}
 							} else {
 								log::debug!(target: "hyperspace_cosmos", "Failed to parse event {:?}", abci_event);
@@ -551,6 +555,15 @@ where
 		Ok(commitment_sequences)
 	}
 
+	async fn on_undelivered_sequences(&self, seqs: &[u64]) -> Result<(), Self::Error> {
+		*self.maybe_has_undelivered_packets.lock().unwrap() = !seqs.is_empty();
+		Ok(())
+	}
+
+	fn has_undelivered_sequences(&self) -> bool {
+		*self.maybe_has_undelivered_packets.lock().unwrap()
+	}
+
 	async fn query_unreceived_acknowledgements(
 		&self,
 		_at: Height,
@@ -661,7 +674,7 @@ where
 										"failed to convert packet info from IbcPacketInfo",
 									))
 								})?;
-							info.height = p.height.revision_height;
+							info.height = Some(p.height.revision_height);
 							block_events.push(info)
 						},
 						_ => (),
@@ -716,7 +729,7 @@ where
 									))
 								})?;
 							info.ack = Some(p.ack);
-							info.height = p.height.revision_height;
+							info.height = Some(p.height.revision_height);
 							block_events.push(info)
 						},
 						_ => (),
@@ -778,7 +791,7 @@ where
 
 	async fn query_host_consensus_state_proof(
 		&self,
-		_height: Height,
+		_client_state: &AnyClientState,
 	) -> Result<Option<Vec<u8>>, Self::Error> {
 		unimplemented!()
 	}
@@ -940,7 +953,8 @@ where
 		_latest_height: u64,
 		_latest_client_height_on_counterparty: u64,
 	) -> Result<bool, Self::Error> {
-		// TODO: Implement is_update_required
+		// we never need to use LightClientSync trait in this case, because
+		// all the events will be eventually submitted via `finality_notifications`
 		Ok(false)
 	}
 
@@ -1036,6 +1050,47 @@ where
 				})
 			}
 		}
+	}
+
+	async fn upload_wasm(&self, wasm: Vec<u8>) -> Result<Vec<u8>, Self::Error> {
+		let msg = MsgPushNewWasmCode { signer: self.account_id(), code: wasm };
+		let hash = self.submit(vec![msg.into()]).await?;
+		let resp = self.wait_for_tx_result(hash).await?;
+		let height = Height::new(
+			ChainId::chain_version(self.chain_id.to_string().as_str()),
+			resp.height.value(),
+		);
+		let deliver_tx_result = resp.tx_result;
+		let mut result = deliver_tx_result
+			.events
+			.iter()
+			.flat_map(|e| ibc_event_try_from_abci_event(e, height).ok().into_iter())
+			.filter(|e| matches!(e, IbcEvent::PushWasmCode(_)))
+			.collect::<Vec<_>>();
+		let code_id = if result.clone().len() != 1 {
+			return Err(Error::from(format!(
+				"Expected exactly one PushWasmCode event, found {}",
+				result.len()
+			)))
+		} else {
+			match result.pop().unwrap() {
+				IbcEvent::PushWasmCode(ev) => ev.0,
+				_ => unreachable!(),
+			}
+		};
+		// let resp = MsgClient::connect(
+		// 	Endpoint::try_from(self.grpc_url.to_string())
+		// 		.map_err(|e| Error::from(format!("Failed to parse grpc url: {:?}", e)))?,
+		// )
+		// .await
+		// .map_err(|e| Error::from(format!("Failed to connect to grpc endpoint: {:?}", e)))?
+		// .push_new_wasm_code(msg)
+		// .await
+		// .map_err(|e| {
+		// 	Error::from(format!("Failed to upload wasm code to grpc endpoint: {:?}", e))
+		// })?;
+
+		Ok(code_id)
 	}
 }
 

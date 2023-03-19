@@ -223,6 +223,10 @@ pub trait IbcProvider {
 		seqs: Vec<u64>,
 	) -> Result<Vec<u64>, Self::Error>;
 
+	async fn on_undelivered_sequences(&self, seqs: &[u64]) -> Result<(), Self::Error>;
+
+	fn has_undelivered_sequences(&self) -> bool;
+
 	/// Given a list of packet acknowledgements sequences from the sink chain
 	/// return a list of acknowledgement sequences that have not been received on the source chain
 	async fn query_unreceived_acknowledgements(
@@ -277,7 +281,7 @@ pub trait IbcProvider {
 	/// consensus state proof.
 	async fn query_host_consensus_state_proof(
 		&self,
-		height: Height,
+		client_state: &AnyClientState,
 	) -> Result<Option<Vec<u8>>, Self::Error>;
 
 	/// Should return the list of ibc denoms available to this account to spend.
@@ -332,6 +336,8 @@ pub trait IbcProvider {
 		&self,
 		tx_id: Self::TransactionId,
 	) -> Result<ClientId, Self::Error>;
+
+	async fn upload_wasm(&self, wasm: Vec<u8>) -> Result<Vec<u8>, Self::Error>;
 }
 
 /// Provides an interface that allows us run the hyperspace-testsuite
@@ -465,6 +471,8 @@ pub async fn query_undelivered_sequences(
 			.next_sequence_receive;
 		seqs.into_iter().filter(|seq| *seq > next_seq_recv).collect()
 	};
+
+	source.on_undelivered_sequences(&undelivered_sequences).await?;
 
 	Ok(undelivered_sequences)
 }
@@ -624,9 +632,10 @@ pub async fn query_maximum_height_for_timeout_proofs(
 		let send_packets =
 			source.query_send_packets(channel, port_id, undelivered_sequences).await.ok()?;
 		for send_packet in send_packets {
+			let revision_height = send_packet.height.expect("expected height for packet");
 			let sink_client_state = source
 				.query_client_state(
-					Height::new(source_height.revision_number, send_packet.height),
+					Height::new(source_height.revision_number, revision_height),
 					sink.client_id(),
 				)
 				.await
@@ -645,7 +654,7 @@ pub async fn query_maximum_height_for_timeout_proofs(
 			let period = Duration::from_nanos(period);
 			let period =
 				calculate_block_delay(period, sink.expected_block_time()).saturating_add(1);
-			let approx_height = send_packet.height + period;
+			let approx_height = revision_height + period;
 			let timeout_height = if send_packet.timeout_height.revision_height < approx_height {
 				send_packet.timeout_height.revision_height
 			} else {

@@ -868,8 +868,8 @@ impl<C: HostBlockType> ChannelKeeper for MockContext<C> {
 
 	fn store_raw_acknowledgement(
 		&mut self,
-		key: (PortId, ChannelId, Sequence),
-		ack: Acknowledgement,
+		_key: (PortId, ChannelId, Sequence),
+		_ack: Acknowledgement,
 	) -> Result<(), Ics04Error> {
 		Ok(())
 	}
@@ -1058,6 +1058,7 @@ where
 		&self,
 		height: Height,
 		_proof: Option<Vec<u8>>,
+		_client_state: &C::AnyClientState,
 	) -> Result<C::AnyConsensusState, Ics02Error> {
 		match self.host_block(height) {
 			Some(block_ref) => Ok(block_ref.clone().into()),
