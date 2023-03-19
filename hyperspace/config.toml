@@ -26,7 +26,7 @@ fee_amount = "4000"
 gas_limit = 1000000
 store_prefix = "0x6962632f"
 max_tx_size = 200000  # a number
-keybase =  {Mnemonic = "wealth flavor believe regret funny network recall kiss grape useless pepper cram hint member few certain unveil rather brick bargain curious require crowd raise" }
+keybase =  {Mnemonic = "decorate bright ozone fork gallery riot bus exhaust worth way bone indoor calm squirrel merry zero scheme cotton until shop any excess stage laundry" }
 
 [core]
 prometheus_endpoint = "https://127.0.0.1"

@@ -24,7 +24,6 @@ use ibc_proto::{
 	google::protobuf::Any,
 };
 use ripemd::Ripemd160;
-use std::{str::FromStr, sync::Arc};
 use std::{
 	str::FromStr,
 	sync::{Arc, Mutex},
@@ -217,9 +216,7 @@ pub struct CosmosClientConfig {
 	/// The key that signs transactions
 	pub keybase: KeyBaseConfig,
 	/// Whitelisted channels
-	pub channel_whitelist: Vec<(ChannelId, PortId)>,
-	/// The key that signs transactions
-	pub keybase: ConfigKeyEntry,
+	pub channel_whitelist: Vec<(ChannelId, PortId)>
 }
 
 impl<H> CosmosClient<H>
