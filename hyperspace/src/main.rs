@@ -32,6 +32,7 @@ async fn main() -> Result<()> {
 		},
 		Subcommand::CreateClients(cmd) => {
 			let new_config = cmd.create_clients().await?;
+			println!("he?");
 			cmd.save_config(&new_config).await
 		},
 		Subcommand::CreateConnection(cmd) => {

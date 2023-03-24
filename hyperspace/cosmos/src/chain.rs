@@ -104,6 +104,7 @@ where
 	async fn finality_notifications(
 		&self,
 	) -> Pin<Box<dyn Stream<Item = <Self as IbcProvider>::FinalityEvent> + Send + Sync>> {
+		log::info!("cosmos finality_notifications");
 		let (ws_client, ws_driver) = WebSocketClient::new(self.websocket_url.clone())
 			.await
 			.map_err(|e| Error::from(format!("Web Socket Client Error {:?}", e)))

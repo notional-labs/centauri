@@ -77,10 +77,11 @@ pub async fn create_clients(
 	};
 
 	let msg = Any { type_url: msg.type_url(), value: msg.encode_vec()? };
-
+	log::info!("submitting tx");
 	let tx_id = chain_a.submit(vec![msg]).await?;
+	log::info!("querying client");
 	let client_id_b_on_a = chain_a.query_client_id_from_tx_hash(tx_id).await?;
-
+	log::info!("client 1: {}", client_id_b_on_a);
 	let msg = MsgCreateAnyClient::<LocalClientTypes> {
 		client_state: client_state_a,
 		consensus_state: cs_state_a,
@@ -124,13 +125,14 @@ pub async fn create_connection(
 		.take(1)
 		.collect::<Vec<_>>();
 
+	log::info!("there 1");
 	let mut events = timeout_future(
 		future,
 		15 * 60,
 		format!("Didn't see OpenConfirmConnection on {}", chain_b.name()),
 	)
 	.await;
-
+	log::info!("there 2");
 	let (connection_id_b, connection_id_a) = match events.pop() {
 		Some(IbcEvent::OpenConfirmConnection(conn)) => (
 			conn.connection_id().unwrap().clone(),

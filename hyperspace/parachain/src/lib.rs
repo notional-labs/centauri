@@ -426,7 +426,7 @@ where
 				},
 			}
 		};
-
+		log::info!("lmaooo");
 		let tx_in_block = progress.wait_for_in_block().await?;
 		tx_in_block.wait_for_success().await?;
 		Ok((tx_in_block.extrinsic_hash(), tx_in_block.block_hash()))

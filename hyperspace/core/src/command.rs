@@ -183,9 +183,13 @@ impl Cmd {
 			chain_b.name(),
 			client_id_a_on_b
 		);
+		log::info!("set client id start");
 		config.chain_a.set_client_id(client_id_a_on_b);
 		config.chain_b.set_client_id(client_id_b_on_a);
-
+		log::info!("done set client id");
+		log::info!("config chain_a: {:?}", config.chain_a);
+		log::info!("config chain_b: {:?}", config.chain_b);
+		log::info!("config core: {:?}", config.core);
 		Ok(config)
 	}
 
@@ -205,6 +209,7 @@ impl Cmd {
 				.await
 				.unwrap();
 		});
+		log::info!("done handle tokio");
 
 		let (connection_id_b, connection_id_a) =
 			create_connection(&chain_a, &chain_b, delay).await?;
@@ -267,13 +272,21 @@ impl Cmd {
 	pub async fn save_config(&self, new_config: &Config) -> Result<()> {
 		let path_a = self.out_config_a.as_ref().cloned().unwrap_or_else(|| self.config_a.clone());
 		let path_b = self.out_config_b.as_ref().cloned().unwrap_or_else(|| self.config_b.clone());
+		log::info!("saving config");
 		write_config(path_a, &new_config.chain_a).await?;
-		write_config(path_b, &new_config.chain_b).await
+		log::info!("write config 1 done");
+		write_config(path_b, &new_config.chain_b).await?;
+		log::info!("write config 2 done");
+		Ok(())
 	}
 }
 
 async fn write_config(path: String, config: &AnyConfig) -> Result<()> {
-	tokio::fs::write(path.parse::<PathBuf>()?, toml::to_string(config)?)
+	log::info!("writing config");
+	let config_string = toml::to_string(config).map_err(|e| anyhow!(e))?;
+	log::info!("??????");
+	tokio::fs::write(PathBuf::from(path), config_string)
 		.await
-		.map_err(|e| anyhow!(e))
+		.map_err(|e| anyhow!(e))?;
+	Ok(())
 }

@@ -119,7 +119,7 @@ impl subxt::Config for DefaultConfig {
 	type ExtrinsicParams = ParachainExtrinsicParams<Self>;
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct Config {
 	pub chain_a: AnyConfig,
 	pub chain_b: AnyConfig,
@@ -134,7 +134,7 @@ pub enum AnyConfig {
 	Cosmos(CosmosClientConfig),
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct CoreConfig {
 	pub prometheus_endpoint: Option<String>,
 }
@@ -1060,10 +1060,12 @@ impl AnyConfig {
 	pub fn set_client_id(&mut self, client_id: ClientId) {
 		match self {
 			Self::Parachain(chain) => {
+				log::info!("set for para");
 				chain.client_id.replace(client_id);
 			},
 			#[cfg(feature = "cosmos")]
 			Self::Cosmos(chain) => {
+				log::info!("set for cosmos");
 				chain.client_id.replace(client_id.to_string());
 			},
 		}

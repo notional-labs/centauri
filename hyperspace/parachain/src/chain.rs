@@ -146,6 +146,7 @@ where
 	async fn finality_notifications(
 		&self,
 	) -> Pin<Box<dyn Stream<Item = <Self as IbcProvider>::FinalityEvent> + Send + Sync>> {
+		log::info!("para finality_notifications");
 		match self.finality_protocol {
 			FinalityProtocol::Grandpa => {
 				let subscription =
@@ -218,7 +219,8 @@ where
 			.into_iter()
 			.map(|msg| RawAny { type_url: msg.type_url.as_bytes().to_vec(), value: msg.value })
 			.collect::<Vec<_>>();
-
+		log::info!("messages {:?}", messages);
+		log::info!("lmaooaa");
 		let call = api::tx().ibc().deliver(messages);
 		let (ext_hash, block_hash) = self.submit_call(call).await?;
 

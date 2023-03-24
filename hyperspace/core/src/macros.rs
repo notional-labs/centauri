@@ -90,6 +90,7 @@ macro_rules! process_finality_event {
 					let type_urls =
 						msgs.iter().map(|msg| msg.type_url.as_str()).collect::<Vec<_>>();
 					log::info!("Submitting messages to {}: {type_urls:#?}", $sink.name());
+					log::info!("Submitting msgs: {:?}", msgs);
 					queue::flush_message_batch(msgs, $metrics.as_ref(), &$sink).await?;
 				}
 

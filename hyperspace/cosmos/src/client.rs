@@ -316,7 +316,7 @@ where
 	pub async fn submit_call(&self, messages: Vec<Any>) -> Result<Hash, Error> {
 		let _lock = self.tx_mutex.lock().await;
 		let account_info = self.query_account().await?;
-
+		log::info!("message {:?}", messages);
 		// Sign transaction
 		let (tx, _, tx_bytes) = sign_tx(
 			self.keybase.clone(),
@@ -325,16 +325,19 @@ where
 			messages,
 			self.get_fee(),
 		)?;
-
+		log::info!("simulating");
 		// Simulate transaction
+		log::info!("grpc {}", self.grpc_url.clone());
 		let res = simulate_tx(self.grpc_url.clone(), tx, tx_bytes.clone()).await?;
 		res.result
 			.map(|r| log::debug!(target: "hyperspace_cosmos", "Simulated transaction: events: {:?}\nlogs: {}", r.events, r.log));
-
+		log::info!("simulate done");
 		// Broadcast transaction
+		log::info!("broadcasting");
 		let hash = broadcast_tx(&self.rpc_client, tx_bytes).await?;
 		log::debug!(target: "hyperspace_cosmos", "🤝 Transaction sent with hash: {:?}", hash);
-
+		log::info!("confirming");
+		log::info!("hash {}", hash);
 		// wait for confirmation
 		confirm_tx(&self.rpc_client, hash).await
 	}

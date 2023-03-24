@@ -87,13 +87,15 @@ pub async fn broadcast_tx(rpc_client: &HttpClient, tx_bytes: Vec<u8>) -> Result<
 		.broadcast_tx_sync(tx_bytes)
 		.await
 		.map_err(|e| Error::from(format!("failed to broadcast transaction {:?}", e)))?;
+	log::info!("response {:?}", response);
 	Ok(response.hash)
 }
 
 pub async fn confirm_tx(rpc_client: &HttpClient, tx_hash: Hash) -> Result<Hash, Error> {
 	let start_time = tokio::time::Instant::now();
-	let timeout = Duration::from_millis(30000);
+	let timeout = Duration::from_millis(60000);
 	const WAIT_BACKOFF: Duration = Duration::from_millis(300);
+	log::info!("after change");
 	let response: TxResponse = loop {
 		let response = rpc_client
 			.tx_search(
