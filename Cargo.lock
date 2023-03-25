@@ -606,6 +606,7 @@ dependencies = [
  "futures",
  "hex",
  "hex-literal",
+ "hyperspace-core",
  "light-client-common",
  "mmr-gadget",
  "pallet-beefy-mmr",
@@ -680,7 +681,6 @@ dependencies = [
  "sp-std 5.0.0 (git+https://github.com/paritytech/substrate?branch=polkadot-v0.9.36)",
  "sp-trie 7.0.0 (git+https://github.com/paritytech/substrate?branch=polkadot-v0.9.36)",
  "subxt",
- "subxt-generated",
  "tokio",
 ]
 
@@ -3657,6 +3657,7 @@ dependencies = [
  "hash-db",
  "hex",
  "hex-literal",
+ "hyperspace-core",
  "jsonrpsee-core",
  "jsonrpsee-ws-client",
  "light-client-common",
@@ -3682,7 +3683,6 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "beefy-prover",
- "codegen",
  "derive_more",
  "downcast-rs",
  "finality-grandpa",
@@ -3691,7 +3691,6 @@ dependencies = [
  "jsonrpsee",
  "jsonrpsee-ws-client",
  "light-client-common",
- "once_cell",
  "parity-scale-codec",
  "sc-finality-grandpa-rpc",
  "serde",
@@ -3701,8 +3700,6 @@ dependencies = [
  "sp-state-machine 0.13.0 (git+https://github.com/paritytech/substrate?branch=polkadot-v0.9.36)",
  "sp-trie 7.0.0 (git+https://github.com/paritytech/substrate?branch=polkadot-v0.9.36)",
  "subxt",
- "subxt-generated",
- "tokio",
 ]
 
 [[package]]
@@ -4079,9 +4076,11 @@ dependencies = [
  "anyhow",
  "async-trait",
  "clap 3.2.23",
+ "codegen",
  "derive_more",
  "env_logger 0.9.3",
  "frame-support",
+ "frame-system",
  "futures",
  "hex",
  "hyperspace-cosmos",
@@ -4096,11 +4095,14 @@ dependencies = [
  "ics11-beefy",
  "light-client-common",
  "log",
+ "once_cell",
  "pallet-ibc",
+ "pallet-ibc-ping",
  "parity-scale-codec",
  "prometheus",
  "prost 0.11.6",
  "serde",
+ "sp-beefy",
  "sp-core 7.0.0 (git+https://github.com/paritytech/substrate?branch=polkadot-v0.9.36)",
  "sp-keyring",
  "sp-keystore 0.13.0 (git+https://github.com/paritytech/substrate?branch=polkadot-v0.9.36)",
@@ -4108,6 +4110,7 @@ dependencies = [
  "sp-state-machine 0.13.0 (git+https://github.com/paritytech/substrate?branch=polkadot-v0.9.36)",
  "sp-trie 7.0.0 (git+https://github.com/paritytech/substrate?branch=polkadot-v0.9.36)",
  "subxt",
+ "subxt-generated",
  "tendermint-proto",
  "thiserror",
  "tokio",
@@ -4188,7 +4191,6 @@ dependencies = [
  "beefy-light-client-primitives",
  "beefy-prover",
  "clap 3.2.23",
- "codegen",
  "derive_more",
  "finality-grandpa",
  "frame-support",
@@ -4210,9 +4212,9 @@ dependencies = [
  "jsonrpsee-ws-client",
  "light-client-common",
  "log",
- "once_cell",
  "pallet-beefy-mmr",
  "pallet-ibc",
+ "pallet-ibc-ping",
  "pallet-mmr",
  "pallet-transaction-payment-rpc",
  "pallet-transaction-payment-rpc-runtime-api",
@@ -4282,6 +4284,8 @@ dependencies = [
  "light-client-common",
  "log",
  "pallet-ibc",
+ "pallet-ibc-ping",
+ "parity-scale-codec",
  "polkadot-core-primitives",
  "serde_json",
  "sp-core 7.0.0 (git+https://github.com/paritytech/substrate?branch=polkadot-v0.9.36)",
@@ -4492,7 +4496,6 @@ dependencies = [
  "ibc-proto",
  "prost 0.11.6",
  "serde",
- "spin 0.9.5",
  "tendermint-proto",
 ]
 
@@ -4511,6 +4514,7 @@ dependencies = [
  "grandpa-light-client-verifier",
  "grandpa-prover",
  "hex",
+ "hyperspace-core",
  "ibc",
  "ibc-derive",
  "ibc-proto",
@@ -4546,7 +4550,6 @@ dependencies = [
  "cosmwasm-storage",
  "cw-multi-test",
  "cw-storage-plus",
- "cw2",
  "derive_more",
  "digest 0.10.6",
  "ed25519-zebra",
@@ -4591,6 +4594,7 @@ dependencies = [
  "derive_more",
  "frame-support",
  "futures",
+ "hyperspace-core",
  "ibc",
  "ibc-derive",
  "ibc-proto",
@@ -5702,14 +5706,19 @@ name = "light-client-common"
 version = "0.1.0"
 dependencies = [
  "anyhow",
+ "async-trait",
  "derive_more",
  "hash-db",
  "ibc",
+ "ibc-proto",
  "parity-scale-codec",
  "serde",
+ "sp-beefy",
  "sp-core 7.0.0 (git+https://github.com/paritytech/substrate?branch=polkadot-v0.9.36)",
+ "sp-runtime 7.0.0 (git+https://github.com/paritytech/substrate?branch=polkadot-v0.9.36)",
  "sp-storage 7.0.0 (git+https://github.com/paritytech/substrate?branch=polkadot-v0.9.36)",
  "sp-trie 7.0.0 (git+https://github.com/paritytech/substrate?branch=polkadot-v0.9.36)",
+ "subxt",
 ]
 
 [[package]]
@@ -9897,7 +9906,7 @@ dependencies = [
  "cc",
  "libc",
  "once_cell",
- "spin 0.5.2",
+ "spin",
  "untrusted",
  "web-sys",
  "winapi",
@@ -13483,12 +13492,6 @@ name = "spin"
 version = "0.5.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "6e63cff320ae2c57904679ba7cb63280a3dc4613885beafb148ee7bf9aa9042d"
-
-[[package]]
-name = "spin"
-version = "0.9.5"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7dccf47db1b41fa1573ed27ccf5e08e3ca771cb994f776668c5ebda893b248fc"
 
 [[package]]
 name = "spki"

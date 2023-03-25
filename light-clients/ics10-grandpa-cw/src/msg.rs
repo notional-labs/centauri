@@ -1,6 +1,6 @@
 use crate::{ics23::FakeInner, Bytes, ContractError};
 use core::str::FromStr;
-use cosmwasm_schema::{cw_serde, QueryResponses};
+use cosmwasm_schema::cw_serde;
 use ibc::{
 	core::{
 		ics23_commitment::commitment::{CommitmentPrefix, CommitmentProofBytes},
@@ -31,6 +31,29 @@ impl Base64 {
 
 	pub fn deserialize<'de, D: Deserializer<'de>>(deserializer: D) -> Result<Vec<u8>, D::Error> {
 		ibc_proto::base64::deserialize(deserializer)
+	}
+}
+
+#[cw_serde]
+pub struct GenesisMetadata {
+	pub key: Vec<u8>,
+	pub value: Vec<u8>,
+}
+
+#[cw_serde]
+pub struct QueryResponse {
+	pub status: String,
+	#[serde(skip_serializing_if = "Option::is_none")]
+	pub genesis_metadata: Option<Vec<GenesisMetadata>>,
+}
+
+impl QueryResponse {
+	pub fn status(status: String) -> Self {
+		Self { status, genesis_metadata: None }
+	}
+
+	pub fn genesis_metadata(genesis_metadata: Option<Vec<GenesisMetadata>>) -> Self {
+		Self { status: "".to_string(), genesis_metadata }
 	}
 }
 
@@ -83,7 +106,6 @@ pub struct ClientCreateRequest {
 pub enum ExecuteMsg {
 	InitializeState(InitializeState),
 	ClientCreateRequest(WasmClientState<FakeInner, FakeInner, FakeInner>),
-	Status(StatusMsg),
 	VerifyMembership(VerifyMembershipMsgRaw),
 	VerifyNonMembership(VerifyNonMembershipMsgRaw),
 	VerifyClientMessage(VerifyClientMessageRaw),
@@ -95,12 +117,11 @@ pub enum ExecuteMsg {
 }
 
 #[cw_serde]
-#[derive(QueryResponses)]
 pub enum QueryMsg {
-	#[returns(String)]
 	ClientTypeMsg(ClientTypeMsg),
-	#[returns(HeightRaw)]
 	GetLatestHeightsMsg(GetLatestHeightsMsg),
+	ExportMetadata(ExportMetadataMsg),
+	Status(StatusMsg),
 }
 
 #[cw_serde]
@@ -111,6 +132,9 @@ pub struct GetLatestHeightsMsg {}
 
 #[cw_serde]
 pub struct StatusMsg {}
+
+#[cw_serde]
+pub struct ExportMetadataMsg {}
 
 #[cw_serde]
 pub struct MerklePath {
@@ -245,7 +269,7 @@ impl<H: Clone> VerifyClientMessage<H> {
 pub struct CheckForMisbehaviourMsgRaw {
 	// pub client_id: String,
 	pub client_state: WasmClientState<FakeInner, FakeInner, FakeInner>,
-	pub misbehaviour: WasmMisbehaviour,
+	pub client_message: ClientMessageRaw,
 }
 
 pub struct CheckForMisbehaviourMsg<H> {
@@ -261,8 +285,7 @@ impl<H: Clone> TryFrom<CheckForMisbehaviourMsgRaw> for CheckForMisbehaviourMsg<H
 		// let client_id = ClientId::from_str(&raw.client_id)?;
 		let any = Any::decode(&*raw.client_state.data)?;
 		let client_state = ClientState::<H>::decode_vec(&any.value)?;
-		let any = Any::decode(&*raw.misbehaviour.data)?;
-		let client_message = ClientMessage::Misbehaviour(Misbehaviour::decode_vec(&any.value)?);
+		let client_message = VerifyClientMessage::<H>::decode_client_message(raw.client_message)?;
 		Ok(Self { client_state, client_message })
 	}
 }
@@ -284,8 +307,9 @@ impl<H: Clone> TryFrom<UpdateStateOnMisbehaviourMsgRaw> for UpdateStateOnMisbeha
 	fn try_from(raw: UpdateStateOnMisbehaviourMsgRaw) -> Result<Self, Self::Error> {
 		let any = Any::decode(&*raw.client_state.data)?;
 		let client_state = ClientState::<H>::decode_vec(&any.value)?;
-		let any = Any::decode(&*raw.client_message.data)?;
-		let client_message = ClientMessage::Misbehaviour(Misbehaviour::decode_vec(&any.value)?);
+		let client_message = VerifyClientMessage::<H>::decode_client_message(
+			ClientMessageRaw::Misbehaviour(raw.client_message),
+		)?;
 		Ok(Self { client_state, client_message })
 	}
 }
