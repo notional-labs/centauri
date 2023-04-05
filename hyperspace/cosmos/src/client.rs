@@ -5,8 +5,11 @@ use super::{
 	tx::{broadcast_tx, confirm_tx, sign_tx, simulate_tx},
 };
 use crate::error::Error;
-use bip32::{ExtendedPrivateKey, XPub as ExtendedPublicKey};
+use bech32::ToBase32;
+use bip32::{
+	DerivationPath, ExtendedPrivateKey, Language, Mnemonic, Prefix, XPrv, XPub as ExtendedPublicKey};
 use core::convert::{From, Into, TryFrom};
+use digest::Digest;
 use ibc::core::{
 	ics02_client::height::Height,
 	ics23_commitment::commitment::{CommitmentPrefix, CommitmentProofBytes},
@@ -23,7 +26,7 @@ use std::{
 	str::FromStr,
 	sync::{Arc, Mutex},
 };
-
+use ripemd::Ripemd160;
 use ics07_tendermint::{
 	client_message::Header, client_state::ClientState, consensus_state::ConsensusState,
 	merkle::convert_tm_to_ics_merkle_proof,
@@ -53,6 +56,12 @@ fn default_fee_amount() -> String {
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
+pub enum KeyBaseConfig {
+	ConfigKeyEntry(ConfigKeyEntry),
+	Mnemonic(String),
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct ConfigKeyEntry {
 	pub public_key: String,
 	pub private_key: String,
@@ -71,6 +80,40 @@ impl TryFrom<ConfigKeyEntry> for KeyEntry {
 			address: value.address,
 		})
 	}
+}
+
+impl TryFrom<MnemonicEntry> for KeyEntry {
+	type Error = bip32::Error;
+
+	fn try_from(mnemonic_entry: MnemonicEntry) -> Result<Self, Self::Error> {
+		// From mnemonic to pubkey
+		let mnemonic =
+			bip39::Mnemonic::from_phrase(&mnemonic_entry.mnemonic, bip39::Language::English)
+				.unwrap();
+		let seed = bip39::Seed::new(&mnemonic, "");
+		let key_m = XPrv::derive_from_path(seed, &DerivationPath::from_str("m/44'/118'/0'/0/0")?)?;
+
+		// From pubkey to address
+		let sha256 = sha2::Sha256::digest(key_m.public_key().to_bytes());
+		let public_key_hash: [u8; 20] = Ripemd160::digest(sha256).into();
+		let account = bech32::encode(
+			&mnemonic_entry.prefix,
+			public_key_hash.to_base32(),
+			bech32::Variant::Bech32,
+		)
+		.unwrap();
+		Ok(KeyEntry {
+			public_key: key_m.public_key(),
+			private_key: key_m,
+			account,
+			address: public_key_hash.into(),
+		})
+	}
+}
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct MnemonicEntry {
+	pub mnemonic: String,
+	pub prefix: String,
 }
 
 // Implements the [`crate::Chain`] trait for cosmos.
@@ -183,7 +226,7 @@ pub struct CosmosClientConfig {
 	/// Whitelisted channels
 	pub channel_whitelist: Vec<(ChannelId, PortId)>,
 	/// The key that signs transactions
-	pub keybase: ConfigKeyEntry,
+	pub keybase: KeyBaseConfig,
 }
 
 impl<H> CosmosClient<H>
@@ -200,6 +243,18 @@ where
 		let commitment_prefix = CommitmentPrefix::try_from(config.store_prefix.as_bytes().to_vec())
 			.map_err(|e| Error::from(format!("Invalid store prefix {:?}", e)))?;
 
+			let keybase: KeyEntry;
+			match config.keybase {
+				KeyBaseConfig::ConfigKeyEntry(config_key) =>
+					keybase = KeyEntry::try_from(config_key).map_err(|e| e.to_string())?,
+				KeyBaseConfig::Mnemonic(mnemonic) =>
+					keybase = KeyEntry::try_from(MnemonicEntry {
+						mnemonic,
+						prefix: config.account_prefix.clone(),
+					})
+					.map_err(|e| e.to_string())?,
+			}
+
 		Ok(Self {
 			name: config.name,
 			chain_id,
@@ -215,7 +270,7 @@ where
 			fee_amount: config.fee_amount,
 			gas_limit: config.gas_limit,
 			max_tx_size: config.max_tx_size,
-			keybase: KeyEntry::try_from(config.keybase).map_err(|e| e.to_string())?,
+			keybase,
 			channel_whitelist: config.channel_whitelist,
 			_phantom: std::marker::PhantomData,
 			tx_mutex: Default::default(),
