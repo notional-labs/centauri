@@ -4076,7 +4076,7 @@ dependencies = [
  "tendermint",
  "tendermint-proto",
  "test-log",
- "time 0.3.17",
+ "time 0.3.21",
  "tokio",
  "tracing",
  "tracing-subscriber 0.3.16",
@@ -4203,7 +4203,7 @@ dependencies = [
  "tendermint-rpc",
  "tendermint-testgen",
  "test-log",
- "time 0.3.17",
+ "time 0.3.21",
  "tracing",
  "tracing-subscriber 0.3.16",
 ]
@@ -4313,7 +4313,7 @@ dependencies = [
  "tendermint-rpc",
  "tendermint-testgen",
  "test-log",
- "time 0.3.17",
+ "time 0.3.21",
  "tokio",
  "tracing",
  "tracing-subscriber 0.3.16",
@@ -13568,7 +13568,7 @@ dependencies = [
  "subtle",
  "subtle-encoding",
  "tendermint-proto",
- "time 0.3.17",
+ "time 0.3.21",
  "zeroize",
 ]
 
@@ -13594,7 +13594,7 @@ dependencies = [
  "flex-error",
  "serde",
  "tendermint",
- "time 0.3.17",
+ "time 0.3.21",
 ]
 
 [[package]]
@@ -13611,7 +13611,7 @@ dependencies = [
  "serde",
  "serde_bytes",
  "subtle-encoding",
- "time 0.3.17",
+ "time 0.3.21",
 ]
 
 [[package]]
@@ -13639,7 +13639,7 @@ dependencies = [
  "tendermint",
  "tendermint-config",
  "thiserror",
- "time 0.3.17",
+ "time 0.3.21",
  "tokio",
  "tracing",
  "url",
@@ -13659,7 +13659,7 @@ dependencies = [
  "simple-error",
  "tempfile",
  "tendermint",
- "time 0.3.17",
+ "time 0.3.21",
 ]
 
 [[package]]
@@ -13785,9 +13785,9 @@ dependencies = [
 
 [[package]]
 name = "time"
-version = "0.3.17"
+version = "0.3.21"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a561bf4617eebd33bca6434b988f39ed798e527f51a1e797d0ee4f61c0a38376"
+checksum = "8f3403384eaacbca9923fa06940178ac13e4edb725486d70e8e15881d0c836cc"
 dependencies = [
  "serde",
  "time-core",
@@ -13796,15 +13796,15 @@ dependencies = [
 
 [[package]]
 name = "time-core"
-version = "0.1.0"
+version = "0.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2e153e1f1acaef8acc537e68b44906d2db6436e2b35ac2c6b42640fff91f00fd"
+checksum = "7300fbefb4dadc1af235a9cef3737cea692a9d97e1b9cbcd4ebdae6f8868e6fb"
 
 [[package]]
 name = "time-macros"
-version = "0.2.6"
+version = "0.2.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d967f99f534ca7e495c575c62638eebc2898a8c84c119b89e250477bc4ba16b2"
+checksum = "372950940a5f07bf38dbe211d7283c9e6d7327df53794992d293e534c733d09b"
 dependencies = [
  "time-core",
 ]
@@ -14376,7 +14376,7 @@ version = "1.6.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "97fee6b57c6a41524a810daee9286c02d7752c4253064d0b05472833a438f675"
 dependencies = [
- "cfg-if 0.1.10",
+ "cfg-if 1.0.0",
  "digest 0.10.6",
  "rand 0.8.5",
  "static_assertions",
