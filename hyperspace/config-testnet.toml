@@ -1,0 +1,13 @@
+type = "parachain"
+name = "picasso"
+para_id = 2087
+parachain_rpc_url = "wss://picasso-rococo-unrpc-lb.composablenodes.tech:443"
+relay_chain_rpc_url = "wss://picasso-rococo-unrpc-lb.composablenodes.tech:443/relay"
+# client_id = "08-wasm-22"
+# connection_id = "connection-60"
+commitment_prefix = "0x6962632f"
+private_key = "pair worry vote exist soda family once scare strong element grape decide"
+ss58_version = 49
+channel_whitelist = []
+finality_protocol = "Grandpa"
+key_type = "sr25519"

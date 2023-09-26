@@ -1,0 +1,15 @@
+type = "cosmos"
+name = "banksy"
+rpc_url = "http://127.0.0.1:2241"
+grpc_url = "http://127.0.0.1:2242"
+websocket_url = "ws://127.0.0.1:2241/websocket"
+chain_id = "centaurid-t1"
+account_prefix = "centauri"
+channel_whitelist = []
+fee_denom = "stake"
+fee_amount = "15000"
+gas_limit = 9223372036854775806
+store_prefix = "ibc"
+max_tx_size = 200000  # a number
+mnemonic = "decorate bright ozone fork gallery riot bus exhaust worth way bone indoor calm squirrel merry zero scheme cotton until shop any excess stage laundry"
+wasm_code_id = "7d8b1889132f9134a18d6ad4b4f9e4dbee7bab57e6665db63263d4467da6b6a4"

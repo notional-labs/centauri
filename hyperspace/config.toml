@@ -1,12 +1,11 @@
 # Parachain to Parachain configuration template
 [chain_a]
 type = "parachain"
-name = "picasso"
+name = "Rococo Local Testnet"
 para_id = 2001
-parachain_rpc_url = "ws://127.0.0.1:9988"
-relay_chain_rpc_url = "ws://127.0.0.1:9944"
-client_id = "10-grandpa-0"
-connection_id = "connection-0"
+parachain_rpc_url = "ws://65.108.73.88:9988"
+relay_chain_rpc_url = "ws://65.108.73.88:9944"
+# client_id = "10-grandpa-0"
 channel_whitelist = []
 commitment_prefix = "0x6962632f"
 private_key = "//Alice"
@@ -15,19 +14,21 @@ key_type = "sr25519"
 finality_protocol = "Grandpa"
 
 [chain_b]
-type = "parachain"
-name = "picasso"
-para_id = 2000
-parachain_rpc_url = "ws://127.0.0.1:9188"
-relay_chain_rpc_url = "ws://127.0.0.1:9944"
-client_id = "10-grandpa-0"
-connection_id = "connection-0"
+type = "cosmos"
+name = "banksy"
+rpc_url = "http://127.0.0.1:2241"
+grpc_url = "http://127.0.0.1:2242"
+websocket_url = "ws://127.0.0.1:2241/websocket"
+chain_id = "centaurid-t1"
+account_prefix = "centauri"
 channel_whitelist = []
-commitment_prefix = "0x6962632f"
-private_key = "//Alice"
-ss58_version = 49
-key_type = "sr25519"
-finality_protocol = "Grandpa"
+fee_denom = "stake"
+fee_amount = "15000"
+gas_limit = 9223372036854775806
+store_prefix = "ibc"
+max_tx_size = 200000  # a number
+keybase = {Mnemonic = "decorate bright ozone fork gallery riot bus exhaust worth way bone indoor calm squirrel merry zero scheme cotton until shop any excess stage laundry"}
+wasm_code_id = "7d8b1889132f9134a18d6ad4b4f9e4dbee7bab57e6665db63263d4467da6b6a4"
 
 [core]
 prometheus_endpoint = "https://127.0.0.1"
