@@ -1,0 +1,15 @@
+type = "cosmos"
+name = "banksy"
+rpc_url = "https://rpc.banksy.rs-testnet.polypore.xyz:443"
+grpc_url = "https://grpc.banksy.rs-testnet.polypore.xyz:443"
+websocket_url = "wss://rpc.banksy.rs-testnet.polypore.xyz:443/websocket"
+chain_id = "banksy-testnet-3"
+account_prefix = "centauri"
+channel_whitelist = []
+fee_denom = "ppica"
+fee_amount = "15000"
+gas_limit = 9223372036854775806
+store_prefix = "ibc"
+max_tx_size = 200000  # a number
+mnemonic = "decorate bright ozone fork gallery riot bus exhaust worth way bone indoor calm squirrel merry zero scheme cotton until shop any excess stage laundry"
+wasm_code_id = "58c7623a3ab78f4cb2e4c5d02876ac36c3b38bb472118173a7ec7faa688a66d2"
