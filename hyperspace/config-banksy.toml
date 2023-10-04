@@ -1,9 +1,9 @@
 type = "cosmos"
 name = "banksy"
-rpc_url = "https://rpc.banksy.rs-testnet.polypore.xyz:443"
-grpc_url = "https://grpc.banksy.rs-testnet.polypore.xyz:443"
-websocket_url = "wss://rpc.banksy.rs-testnet.polypore.xyz:443/websocket"
-chain_id = "banksy-testnet-3"
+rpc_url = "https://rpc-banksy4.notional.ventures:443"
+grpc_url = "https://api-banksy4.notional.ventures:443"
+websocket_url = "wss://ws-banksy4.notional.ventures:443"
+chain_id = "banksy-testnet-4"
 account_prefix = "centauri"
 channel_whitelist = []
 fee_denom = "ppica"
